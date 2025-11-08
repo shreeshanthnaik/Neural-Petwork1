@@ -1,0 +1,17 @@
+# Python virtual environments (Hatch)
+/C:/Users/shreeshanth/AppData/Local/hatch/env/virtual/
+__pycache__/
+*.pyc
+
+# Dataset folder - TOO BIG!
+dataset/
+
+# Uploads folder (created by the app)
+uploads/
+
+# Model files (handled by Git LFS)
+*.h5
+
+# OS-specific files
+.DS_Store
+Thumbs.db

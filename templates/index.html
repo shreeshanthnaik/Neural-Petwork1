@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Neural Petwork: Cat vs. Dog</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+               background-color: #f4f4f9; color: #333; text-align: center; padding-top: 50px; }
+        h1 { color: #4a4a4a; }
+        .container { background-color: #ffffff; max-width: 500px; margin: auto; 
+                     padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        input[type="file"] { border: 2px dashed #007bff; border-radius: 5px; 
+                             padding: 20px; cursor: pointer; display: block; margin: 20px auto; }
+        input[type="submit"] { background-color: #007bff; color: white; border: none; 
+                               padding: 12px 25px; border-radius: 5px; font-size: 16px; 
+                               cursor: pointer; transition: background-color 0.3s ease; }
+        input[type="submit"]:hover { background-color: #0056b3; }
+        h2 { margin-top: 30px; font-size: 24px; }
+        .result-cat { color: #ff6347; } /* Tomato Red */
+        .result-dog { color: #4682b4; } /* Steel Blue */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Neural Petwork 🐾</h1>
+        <p>Upload an image to see if it's a cat or a dog!</p>
+        
+        <form action="/predict" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" required>
+            <input type="submit" value="Classify">
+        </form>
+
+        {% if prediction %}
+            <h2 class="{{ 'result-cat' if 'Cat' in prediction else 'result-dog' }}">
+                Prediction: {{ prediction }}
+            </h2>
+        {% endif %}
+    </div>
+</body>
+</html>
