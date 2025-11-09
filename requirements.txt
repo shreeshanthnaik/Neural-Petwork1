@@ -16,8 +16,8 @@ ultralytics
 # We included this for the next planned project
 segmentation-models
 
-to install all type
+# to install all type
 hatch run pip install -r requirements.txt
 
-or
+# or
 hatch run pip install tensorflow ultralytics flask pillow matplotlib opencv-python
