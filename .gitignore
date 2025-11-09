@@ -2,16 +2,24 @@
 /C:/Users/shreeshanth/AppData/Local/hatch/env/virtual/
 __pycache__/
 *.pyc
+*.egg-info/
+/venv/
 
-# Dataset folder - TOO BIG!
+# --- Large Datasets to EXCLUDE (Crucial!) ---
 dataset/
+cat_faces_all/
+Oxford Pets.v2-by-species.yolov12/
 
-# Uploads folder (created by the app)
+# --- Training and Prediction Artifacts to EXCLUDE ---
+# This folder contains all the models, logs, graphs, and prediction outputs.
+# We will manually UPLOAD the few 'best.pt' and '.h5' files, but ignore the rest.
+runs/
+gan_results/
+
+# App-specific folders
 uploads/
 
-# Model files (handled by Git LFS)
-*.h5
-
-# OS-specific files
-.DS_Store
-Thumbs.db
+# Model Files (Ignore by default, we will use Git LFS for the 'best.pt' and final .h5)
+# This prevents accidentally committing large files.
+# *.h5
+# *.pt

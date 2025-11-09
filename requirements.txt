@@ -1,0 +1,20 @@
+# CORE LIBRARIES
+tensorflow
+keras
+numpy
+matplotlib
+opencv-python
+pillow
+
+# WEB APPLICATION
+flask
+
+# OBJECT DETECTION (YOLOv8)
+ultralytics
+
+# SEGMENTATION (Future Expansion)
+# We included this for the next planned project
+segmentation-models
+
+to install all type
+hatch run pip install -r requirements.txt

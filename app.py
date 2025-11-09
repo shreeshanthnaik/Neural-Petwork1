@@ -1,38 +1,26 @@
 import os
-import numpy as np
-import tensorflow as tf
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+from ultralytics import YOLO
 
-# --- 1. Install this if you don't have it: pip install Pillow ---
-from PIL import Image
-
-print("Loading trained model...")
-# Load your trained model
-MODEL_PATH = 'cats_vs_dogs.h5'
-model = tf.keras.models.load_model(MODEL_PATH)
-print(f"Model {MODEL_PATH} loaded successfully.")
+# --- 1. Load your trained YOLOv8 model ---
+# Make sure this path is correct
+MODEL_PATH = r"runs\detect\train\weights\best.pt"
+print(f"Loading model from {MODEL_PATH}...")
+model = YOLO(MODEL_PATH)
+print("Model loaded successfully.")
 
 # Initialize the Flask app
 app = Flask(__name__)
 
-# --- 2. Define the image preprocessing function ---
-def preprocess_image(image_path, target_size=(150, 150)):
-    """
-    Loads an image from a path, resizes it to 150x150,
-    normalizes it, and adds a batch dimension.
-    """
-    # Load the image
-    img = Image.open(image_path)
-    # Resize the image
-    img = img.resize(target_size)
-    # Convert to numpy array
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
-    # Normalize pixel values
-    img_array /= 255.0
-    # Add a batch dimension (model expects 4D tensor: [batch_size, H, W, C])
-    img_array = np.expand_dims(img_array, axis=0)
-    return img_array
+# --- 2. Configure upload and result folders ---
+UPLOAD_FOLDER = 'uploads'
+RESULTS_FOLDER = 'static' # Flask serves static files from here
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(RESULTS_FOLDER, exist_ok=True)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['RESULTS_FOLDER'] = RESULTS_FOLDER
 
 # --- 3. Define the main page route ---
 @app.route('/', methods=['GET'])
@@ -52,39 +40,36 @@ def predict():
         return redirect(url_for('index'))
 
     if file:
-        # Save the file temporarily
+        # Save the uploaded file
         filename = secure_filename(file.filename)
-        # We need a path to save it. Let's create an 'uploads' folder
-        uploads_dir = os.path.join(app.root_path, 'uploads')
-        os.makedirs(uploads_dir, exist_ok=True)
-        file_path = os.path.join(uploads_dir, filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
         try:
-            # Preprocess the image
-            processed_image = preprocess_image(file_path)
-
-            # Make a prediction
-            prediction = model.predict(processed_image)
+            # --- 5. Run the YOLOv8 prediction ---
+            results = model.predict(source=file_path, save=True)
             
-            # Get the raw prediction value
-            score = prediction[0][0]
-
-            # Interpret the result
-            if score > 0.5:
-                result_text = f"It's a Dog! (Confidence: {score*100:.2f}%)"
-            else:
-                result_text = f"It's a Cat! (Confidence: {(1-score)*100:.2f}%)"
+            # --- 6. Get the path to the result image ---
+            result_save_dir = results[0].save_dir
+            result_filename = filename # The saved image has the same name
+            
+            result_image_path = os.path.join(result_save_dir, result_filename)
+            static_image_path = os.path.join(app.config['RESULTS_FOLDER'], result_filename)
+            
+            # --- THIS IS THE FIX ---
+            # os.replace will overwrite the old file if it exists
+            os.replace(result_image_path, static_image_path)
+            
+            # Pass the *filename* to the HTML template
+            return render_template('index.html', result_image=result_filename)
 
         except Exception as e:
-            print(f"Error during prediction: {e}")
-            result_text = "Error: Could not process image."
-
-        # Re-render the page with the result
-        return render_template('index.html', prediction=result_text)
+            print(f"An error occurred: {e}")
+            # If an error happens, tell the user on the webpage
+            return render_template('index.html', prediction=f"Error: {e}")
 
     return redirect(url_for('index'))
 
-# --- 5. Run the app ---
+# --- 6. Run the app ---
 if __name__ == '__main__':
     app.run(debug=True)
