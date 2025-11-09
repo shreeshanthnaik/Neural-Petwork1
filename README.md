@@ -1,14 +1,13 @@
 # 🐾 Neural Petwork: Full-Stack Computer Vision Projects
 
-This repository contains the complete code for three major Computer Vision and Deep Learning projects, demonstrating end-to-end ML workflow from data preparation to deployment-ready models.
+This repository contains the complete code for two major Computer Vision projects, demonstrating end-to-end ML workflow from data preparation to a functional web application.
 
 ## 🚀 Projects Completed
 
 | Project Phase | Goal | Model & Technique | Final Accuracy |
 | :--- | :--- | :--- | :--- |
-| **Phase 1: Classification** | Identify Cat vs. Dog. | CNN + MobileNetV2 (Transfer Learning) | **98.7%** |
-| **Phase 2: Object Detection** | Locate and identify Cat vs. Dog with bounding boxes. | Custom-trained **YOLOv8n** | **98.5% mAP50** |
-| **Phase 3: Image Generation** | Generate new, fake cat faces. | **Generative Adversarial Network (GAN)** | *[Training discontinued due to CPU limits]* |
+| **Phase 1: Classification** | **Identify Cat vs. Dog** (Image Classifier). | CNN + MobileNetV2 (Transfer Learning & Fine-Tuning) | **98.7%** |
+| **Phase 2: Object Detection** | **Locate and Identify Pet** (Draw bounding boxes around cats/dogs). | Custom-trained **YOLOv8n** | **98.5% mAP50** |
 
 ---
 
