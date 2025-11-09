@@ -18,3 +18,6 @@ segmentation-models
 
 to install all type
 hatch run pip install -r requirements.txt
+
+or
+hatch run pip install tensorflow ultralytics flask pillow matplotlib opencv-python
